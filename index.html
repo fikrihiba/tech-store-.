@@ -8,7 +8,7 @@
 <body>
 <div class="app">
 
-  <!-- SIDEBAR -->
+
   <aside class="sidebar">
     <h2>TechStore</h2>
     <button onclick="showSection('products')">Produits</button>
@@ -16,14 +16,14 @@
     <button onclick="showSection('categories')">Catégories</button>
   </aside>
 
-  <!-- CONTENU -->
+
   <main class="content">
 
-    <!-- SECTION PRODUITS -->
+  
     <section id="products" class="section">
       <h1 class="title">Produits</h1>
 
-      <!-- FORMULAIRE PRODUITS -->
+  
       <form id="productForm">
         <input type="text" id="name" placeholder="Nom du produit" required>
         <input type="number" id="price" placeholder="Prix (DH)" required>
@@ -34,7 +34,7 @@
         <button type="submit">Ajouter</button>
       </form>
 
-      <!-- TABLEAU PRODUITS -->
+  
       <table>
         <thead>
           <tr>
@@ -49,13 +49,12 @@
       </table>
     </section>
 
-    <!-- SECTION DASHBOARD -->
+
     <section id="dashboard" class="section hidden">
       <h1>Dashboard</h1>
       <p>À venir dans les prochaines semaines</p>
     </section>
 
-    <!-- SECTION CATÉGORIES -->
     <section id="categories" class="section hidden">
       <h1 class="title">Catégories</h1>
 
@@ -73,3 +72,4 @@
 <script src="app.js"></script>
 </body>
 </html>
+
