@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>TechStore</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2>TechStore</h2>
+    <button onclick="showSection('products')">Produits</button>
+    <button onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('categories')">Catégories</button>
+  </aside>
+
+  <!-- CONTENU -->
+  <main class="content">
+
+    <!-- SECTION PRODUITS -->
+    <section id="products" class="section">
+      <h1 class="title">Produits</h1>
+
+      <!-- FORMULAIRE PRODUITS -->
+      <form id="productForm">
+        <input type="text" id="name" placeholder="Nom du produit" required>
+        <input type="number" id="price" placeholder="Prix (DH)" required>
+        <input type="number" id="stock" placeholder="Stock" required>
+        <select id="categorySelect">
+          <option value="">-- Catégorie --</option>
+        </select>
+        <button type="submit">Ajouter</button>
+      </form>
+
+      <!-- TABLEAU PRODUITS -->
+      <table>
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prix</th>
+            <th>Stock</th>
+            <th>Catégorie</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productTable"></tbody>
+      </table>
+    </section>
+
+    <!-- SECTION DASHBOARD -->
+    <section id="dashboard" class="section hidden">
+      <h1>Dashboard</h1>
+      <p>À venir dans les prochaines semaines</p>
+    </section>
+
+    <!-- SECTION CATÉGORIES -->
+    <section id="categories" class="section hidden">
+      <h1 class="title">Catégories</h1>
+
+      <form id="categoryForm">
+        <input type="text" id="categoryName" placeholder="Nouvelle catégorie" required>
+        <button type="submit">Ajouter</button>
+      </form>
+
+      <ul id="categoryList"></ul>
+    </section>
+
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
