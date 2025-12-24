@@ -1,136 +1,109 @@
-// ===== Données =====
-let products = [];
-let categories = [];
+// SPA Navigation
+const sections = document.querySelectorAll('.section');
+const sidebarItems = document.querySelectorAll('.sidebar li');
+const sectionTitle = document.getElementById('section-title');
 
-// ===== Navigation SPA =====
-function showSection(id) {
-  document.querySelectorAll(".section").forEach(section => section.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
+sidebarItems.forEach(item => {
+    item.addEventListener('click', () => {
+        sidebarItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        sections.forEach(sec => sec.classList.remove('active'));
+        document.getElementById(item.dataset.section).classList.add('active');
+        sectionTitle.textContent = item.textContent;
+    });
+});
+
+// ===== Module 1  =====
+let products = JSON.parse(localStorage.getItem("smart_dashboard_products")) || [];
+const productForm = document.getElementById('product-form');
+const productTableBody = document.querySelector('#product-table tbody');
+const searchInput = document.getElementById('search-product');
+
+function renderProducts(list = products) {
+    productTableBody.innerHTML = '';
+    list.forEach((p, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${p.name}</td>
+            <td>${p.price}</td>
+            <td>${p.category}</td>
+            <td>
+                <button onclick="editProduct(${index})">Modifier</button>
+                <button onclick="deleteProduct(${index})">Supprimer</button>
+            </td>
+        `;
+        productTableBody.appendChild(tr);
+    });
 }
 
-// ===== Module Produits =====
-const form = document.getElementById("productForm");
-const table = document.getElementById("productTable");
-const categorySelect = document.getElementById("categorySelect");
+productForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('product-name').value.trim();
+    const price = parseFloat(document.getElementById('product-price').value);
+    const category = document.getElementById('product-category').value.trim();
+    products.push({name, price, category});
+    localStorage.setItem("smart_dashboard_products", JSON.stringify(products));
+    renderProducts();
+    productForm.reset();
+});
 
-form.addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const name = document.getElementById("name").value.trim();
-  const price = parseFloat(document.getElementById("price").value);
-  const stock = parseInt(document.getElementById("stock").value);
-  const category = categorySelect.value;
-  const productId = form.dataset.editId;
-
-  if (!name || price < 0 || stock < 0) {
-    alert("Veuillez saisir des valeurs valides !");
-    return;
-  }
-
-  if (productId) {
-    const idx = products.findIndex(p => p.id === productId);
-    if (idx !== -1) {
-      products[idx] = { ...products[idx], name, price, stock, category };
+window.deleteProduct = index => {
+    if(confirm('Supprimer ce produit ?')) {
+        products.splice(index,1);
+        localStorage.setItem("smart_dashboard_products", JSON.stringify(products));
+        renderProducts();
     }
-    delete form.dataset.editId;
-  } else {
-    const product = { id: Date.now().toString(), name, price, stock, category };
-    products.push(product);
-  }
+};
 
-  afficherProduits();
-  form.reset();
+window.editProduct = index => {
+    const p = products[index];
+    const newName = prompt('Nom', p.name);
+    const newPrice = prompt('Prix', p.price);
+    const newCategory = prompt('Catégorie', p.category);
+    if(newName && newPrice && newCategory){
+        products[index] = {name: newName, price: parseFloat(newPrice), category: newCategory};
+        localStorage.setItem("smart_dashboard_products", JSON.stringify(products));
+        renderProducts();
+    }
+};
+
+searchInput.addEventListener('keyup', () => {
+    const term = searchInput.value.toLowerCase();
+    renderProducts(products.filter(p => p.name.toLowerCase().includes(term)));
 });
 
-// Affichage produits
-function afficherProduits() {
-  table.innerHTML = "";
-  if (products.length === 0) {
-    table.innerHTML = `<tr><td colspan="5" class="text-center">Aucun produit</td></tr>`;
-    return;
-  }
+// ===== Module 2  =====
+let categories = JSON.parse(localStorage.getItem("smart_dashboard_categories")) || [];
+const categoryForm = document.getElementById('category-form');
+const categoryList = document.getElementById('category-list');
 
-  products.forEach(p => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${p.name}</td>
-      <td>${p.price} €</td>
-      <td>${p.stock}</td>
-      <td>${p.category || "-"}</td>
-      <td>
-        <button class="edit">Modifier</button>
-        <button class="delete">Supprimer</button>
-      </td>
-    `;
-
-    row.querySelector(".edit").addEventListener("click", () => {
-      document.getElementById("name").value = p.name;
-      document.getElementById("price").value = p.price;
-      document.getElementById("stock").value = p.stock;
-      categorySelect.value = p.category || "";
-      form.dataset.editId = p.id;
-      showSection("products");
+function renderCategories() {
+    categoryList.innerHTML = '';
+    categories.forEach((c, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `${c} <button onclick="deleteCategory(${index})">Supprimer</button>`;
+        categoryList.appendChild(li);
     });
-
-    row.querySelector(".delete").addEventListener("click", () => {
-      if (confirm(`Supprimer le produit "${p.name}" ?`)) {
-        products = products.filter(x => x.id !== p.id);
-        afficherProduits();
-      }
-    });
-
-    table.appendChild(row);
-  });
 }
 
-// ===== Module Catégories =====
-const categoryForm = document.getElementById("categoryForm");
-const categoryList = document.getElementById("categoryList");
-
-categoryForm.addEventListener("submit", function(e) {
-  e.preventDefault();
-  const name = document.getElementById("categoryName").value.trim();
-  if (!name) return;
-
-  if (!categories.includes(name)) {
-    categories.push(name);
-    afficherCategories();
-    updateCategorySelect();
-  } else {
-    alert("Cette catégorie existe déjà !");
-  }
-
-  categoryForm.reset();
+categoryForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('category-name').value.trim();
+    if(name){
+        categories.push(name);
+        localStorage.setItem("smart_dashboard_categories", JSON.stringify(categories));
+        renderCategories();
+        categoryForm.reset();
+    }
 });
 
-function afficherCategories() {
-  categoryList.innerHTML = "";
-  categories.forEach((cat, index) => {
-    const li = document.createElement("li");
-    li.textContent = cat + " ";
-    const btn = document.createElement("button");
-    btn.textContent = "Supprimer";
-    btn.addEventListener("click", () => {
-      if (products.some(p => p.category === cat)) {
-        alert("Impossible de supprimer : des produits utilisent cette catégorie !");
-        return;
-      }
-      categories.splice(index, 1);
-      afficherCategories();
-      updateCategorySelect();
-    });
-    li.appendChild(btn);
-    categoryList.appendChild(li);
-  });
-}
+window.deleteCategory = index => {
+    if(confirm('Supprimer cette catégorie ?')){
+        categories.splice(index,1);
+        localStorage.setItem("smart_dashboard_categories", JSON.stringify(categories));
+        renderCategories();
+    }
+};
 
-// Met à jour la liste déroulante du formulaire produits
-function updateCategorySelect() {
-  categorySelect.innerHTML = '<option value="">-- Catégorie --</option>';
-  categories.forEach(cat => {
-    const option = document.createElement("option");
-    option.value = cat;
-    option.textContent = cat;
-    categorySelect.appendChild(option);
-  });
-}
+renderProducts();
+renderCategories();
