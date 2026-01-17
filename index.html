@@ -1,68 +1,101 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHSTORE</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Techstore</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 <div class="app">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h2>TECHSTORE</h2>
-        <ul>
-            <li class="active" data-section="module1"><i class="fa-solid fa-box"></i> Module 1 (Produits)</li>
-            <li data-section="module2"><i class="fa-solid fa-layer-group"></i> Module 2 (Catégories)</li>
-        </ul>
-    </div>
 
-    <!-- Main Content -->
-    <div class="main">
-        <!-- Navbar -->
-        <div class="navbar">
-            <h1 id="section-title">Produits</h1>
+  <aside class="sidebar">
+    <h2>Techstore</h2>
+    <ul>
+      <li class="active" data-section="dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
+      <li data-section="module1"><i class="fa-solid fa-box"></i> Produits</li>
+      <li data-section="module2"><i class="fa-solid fa-layer-group"></i> Catégories</li>
+    </ul>
+  </aside>
+
+  <main class="main">
+    <header class="navbar">
+      <h1 id="section-title">Dashboard</h1>
+    </header>
+
+    <div class="sections">
+
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="section active">
+        <div class="kpi-container">
+          <div class="kpi-card"><h3>Total Produits</h3><p id="kpi-products">0</p></div>
+          <div class="kpi-card"><h3>Total Catégories</h3><p id="kpi-categories">0</p></div>
+          <div class="kpi-card"><h3>Valeur Stock</h3><p id="kpi-stock">0 €</p></div>
         </div>
 
-        <!-- Sections -->
-        <div class="sections">
-            <!-- Module 1 -->
-            <div id="module1" class="section active">
-                <h2>Info Produits</h2>
-                <form id="product-form">
-                    <input type="text" id="product-name" placeholder="Nom du produit" required>
-                    <input type="number" id="product-price" placeholder="Prix" required>
-                    <input type="text" id="product-category" placeholder="Catégorie" required>
-                    <button type="submit" class="btn">Ajouter</button>
-                </form>
-                <input type="text" id="search-product" placeholder="Rechercher produit...">
-                <table id="product-table">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Prix</th>
-                            <th>Catégorie</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-
-            <!-- Module 2 -->
-            <div id="module2" class="section">
-                <h2> Catégories </h2>
-                <form id="category-form">
-                    <input type="text" id="category-name" placeholder="Nom de la catégorie" required>
-                    <button type="submit" class="btn">Ajouter</button>
-                </form>
-                <ul id="category-list"></ul>
-            </div>
+        <div class="panel">
+          <canvas id="chart-products"></canvas>
+          <div class="panel-actions">
+            <button id="fetch-api" class="btn"><i class="fa-solid fa-cloud-arrow-down"></i> Charger FakeStoreAPI</button>
+          </div>
         </div>
+      </section>
+
+      <!-- PRODUITS -->
+      <section id="module1" class="section">
+        <h2>Produits</h2>
+
+        <form id="product-form">
+          <input id="product-name" placeholder="Nom" required />
+          <input id="product-price" type="number" placeholder="Prix" required />
+          <input id="product-category" placeholder="Catégorie" required />
+          <button class="btn">Ajouter</button>
+        </form>
+
+        <div class="tools">
+          <input id="search-product" placeholder="Recherche..." />
+          <select id="filter-category"><option value="">Toutes</option></select>
+          <button id="sort-name" class="btn btn-soft">Nom</button>
+          <button id="sort-price" class="btn btn-soft">Prix</button>
+        </div>
+
+        <table id="product-table">
+          <thead>
+            <tr><th>Nom</th><th>Prix</th><th>Catégorie</th><th>Actions</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <div id="empty-products" class="empty" style="display:none;">
+          <i class="fa-solid fa-box-open"></i><p>Aucun produit</p>
+        </div>
+
+        <!-- 🔹 DÉTAILS PRODUIT -->
+        <div id="product-details" class="panel" style="display:none; margin-top:16px;">
+          <h3>Détails du produit</h3>
+          <p><strong>Nom :</strong> <span id="detail-name"></span></p>
+          <p><strong>Prix :</strong> <span id="detail-price"></span></p>
+          <p><strong>Catégorie :</strong> <span id="detail-category"></span></p>
+        </div>
+      </section>
+
+      <!-- CATÉGORIES -->
+      <section id="module2" class="section">
+        <h2>Catégories</h2>
+        <form id="category-form">
+          <input id="category-name" placeholder="Nom catégorie" required />
+          <button class="btn">Ajouter</button>
+        </form>
+        <ul id="category-list"></ul>
+      </section>
+
     </div>
+  </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
